@@ -1,0 +1,54 @@
+<h2 id="title">Results</h2><br>
+<div class="container-fluid" id="box">
+  <div id="resultsTable" class="table-responsive">
+    <table class="table table-hover" id="resultsTable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Nominee</th>
+          <th># Confirmed</th>
+          <th># Against</th>
+          <th># Abstained</th>
+        </tr>
+      </thead>
+      <% @count = 0 %>
+      <% @nominees = @nominees.order("confirmed DESC") %>
+      
+      <!-- Define the total number of voters by adding the number of confirmed, against and abstained votes. Check that this number is equal for two of the nominees to verify consistency -->
+      <% @total_voters = 0 %>
+      <% @subject1 = @nominees[8].confirmed.to_f + @nominees[8].not_confirmed.to_f + @nominees[8].abstained.to_f %>
+      <% @subject2 = @nominees[6].confirmed.to_f + @nominees[6].not_confirmed.to_f + @nominees[6].abstained.to_f %>
+      <!-- <h1><%= @subject1 %></h1>
+      <h1><%= @subject2 %></h1>-->
+
+      <% if @subject1 == @subject2 %>
+          <% @total_voters = @subject2.round(0) %>
+          <div id="totalVotes">
+            <h3 class="bg-success">Total voting members: <%= @total_voters %> of <%= Member.count %> ( <%= (@total_voters*100/Member.count).round(2) %>% )</h3>
+          </div>
+          <!-- <h1>Total voters = <%= @total_voters %></h1> -->
+      <% else %>
+          <% @total_voters = @subject2.round(0) %>
+          <div id="totalVotes" class="center-block">
+            <p class="bg-danger">Total voting members: <%= @total_voters %> of <%= Member.count %> ( <%= (@total_voters*100/Member.count).round(2)%>% )</p>
+          </div>
+      <% end %>
+      
+      <!-- Loop through the nominees table to display each one in a different row  -->
+      <% @nominees.each do |nominee| %>
+      <!-- Since we at this stage only the nominees preselected by the committe have advanced
+            then we must check that only nominees with committee_check == true are shown -->
+        <!--% if nominee.chairman_check %> 05/23/2016: Disabled since they wanted to enable the voting process for all nominees -->
+          <tr>
+          <% @count = @count + 1 %>
+            <td class="td"><%= @count %></td>
+            <td class="td"><%= nominee.name %></td>
+            <td class="td"><%= nominee.confirmed %><p>(<%= (nominee.confirmed.to_f*100/@total_voters.to_f).round(2) %>%)</p></td>
+            <td class="td"><%= nominee.not_confirmed %><p>(<%= (nominee.not_confirmed.to_f*100/@total_voters.to_f).round(2) %>%)</p></td>
+            <td class="td"><%= nominee.abstained %><p>(<%= (nominee.abstained.to_f*100/@total_voters.to_f).round(2) %>%)</p></td>
+          </tr>
+        <!-- % end %> <! End of the if -->
+      <% end %> <!-- End of for -->
+    </table><br>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<h2 id="title">Candidate Selection</h2><br>
+<div class="container-fluid" id="box">
+  <div class="table-responsive">
+    <table class="table table-hover" id="nomineeTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Approve</th>
+          <th>Nominee Name</th>
+          <th>Supporting Documents</th>
+        </tr>
+      </thead>
+      <% @count = 0 %> <!-- This count is to enumerate each row of the table -->
+      <% @nominees = @nominees.order("name") %>
+      <!-- Loop through the nominees table to display each one in a different row  -->
+      <% @nominees.each do |nominee| %>
+      <tr>
+      <% @count = @count + 1 %>
+      <!-- @index helps to keep track of the checkbox id within the array of checkboxes -->
+      <% @index = @count - 1 %>
+      <%= bootstrap_form_for nominee, :action => 'candidate_selection', layout: :inline, remote: true do |f| %>
+    
+        <td class="td"><%= @count %></td>
+        <td><%= f.check_box :committee_check, label: " ", hide_label: true, :checked => false, :class => "taskCheckbox", :onChange => "javascript: if($('.taskCheckbox')[#{@index}].checked){if(!sure()){$('.taskCheckbox')[#{@index}].checked = false;}};" %>
+        </td>
+        <td class="td"><%= nominee.name %></td>
+        <td>
+          <!-- Button trigger modal -->
+         <a href="#myModal<%= nominee.id%>" role="button" class="center" data-toggle="modal">View Details</a>          <!-- Modal -->
+            
+            <div class="modal fade" id="myModal<%= nominee.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">Details for:  <%= nominee.name %></h3>
+                  </div><br>
+                  <div class="container-fluid" align="justify">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <p>
+                          <strong>Nominee Mail:</strong>
+                          <%= nominee.mail %>
+                        </p>
+                      </div>
+                    <br>  
+                    </div>
+                    <div class="row">  
+                      <div class="col-md-12">
+                        <p><strong>Nominee Statement:</strong></p>
+                        <textarea id="statement" class="form-control" rows="5">
+                          <%= nominee.statement %>
+                        </textarea>
+                      </div>
+                    </div>  
+                    <br>
+                    <div class="row">  
+                      <div class="col-md-12">
+                        <p><strong>Nominee Curriculum Vitae:</strong></p>
+                        <textarea id="cv" class="form-control" rows="20">
+                          <%= nominee.cv %>
+                        </textarea>
+                      </div>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </td>
+      <% end %>
+      </tr>
+      <script type="text/javascript">
+        var sure = function() {
+          var reply = confirm("Are you sure you want to approve this nominee?");
+          if (reply) {return true;}
+        };
+      </script>
+      <% end %>
+    </table>
+    <div class="center">
+      <%= submit_tag "Submit Approvals", :class => "btn btn-primary btn-lg", :id => "approve", :data => {:disable_with => "Saving..."} %>
+    </div>
+    <div class="modal fade" id="submitModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h3 style="text-align: center;">...Submitting your approvals.</h3>
+            <h3 style="text-align: center;">Please wait.</h3>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div>
+</div>
+
+
+

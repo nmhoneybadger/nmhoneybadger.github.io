@@ -1,0 +1,127 @@
+<h2 id="title">Fellows Vote</h2><br>
+<div class="container-fluid" id="box">
+  <div class="jumbotron" id="note">
+    <button type="button" id="jumboclose" class="close" aria-hidden="true">&times; dismiss</button>
+    <h3>To vote for a nominee:</h3>
+    <h4>1. Type your email and click the verify button. If your email is registered the voting list will be displayed.</h4>
+    <h4>2. Select the correponding option in front of her/his name.</h4>
+    <h4>3. Click the "Submit Vote" button at the bottom of the form.</h4>
+  </div>
+  <div class="container-fluid" id="collapsed">
+    <button type="button" id="jumboclose" class="close" aria-hidden="true">
+    <span class="caret"></span>Notes</button>
+  </div><br>
+  <div class="valid_member">
+    <div class="center">
+      <%= bootstrap_form_tag :action => 'valid_member', remote: true do |f| %>
+          <%= f.email_field :email, label: 'Enter email: ', hide_label: true, layout: :horizontal, control_col: "col-sm-10 col-md-10", placeholder: 'Your email is for validation purpose only' %> 
+          <%= f.submit "Verify", :class => "btn btn-primary btn", :id => "valid_member" %>
+      <% end %>
+    </div>
+  </div>
+  <br>
+  <!-- Display if invalid -->
+  <div id="invalid" class="center-block">
+    <p class="bg-danger">Your email does not appear on our records. Contact the administrators</p>
+  </div>
+  <!-- Display if voted already -->
+  <div id="voted" class="center-block">
+    <p class="bg-warning">Warning: Our records indicate that you have already voted.</p>
+  </div>
+  <!-- Display after vote submission -->
+  <div id="vote_submitted" class="center-block">
+    <p class="bg-success">Thank you, your submission has been recorded.</p>
+  </div>
+  <!-- Display if valid -->
+  <div id="votingTable" class="table-responsive">
+    <div class="center-block">
+      <p class="bg-success">Your email was succesfully validated.</p>
+    </div>
+    <table class="table table-hover" id="votingTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nominee</th>
+          <th>Documents</th>
+          <th>Confirmed</th>
+          <th>Not Confirmed</th>
+          <th>Abstained</th>
+        </tr>
+      </thead>
+      <% @count = 0 %> <!-- This count is to enumerate each row of the table -->
+      <% @nominees = @nominees.order("name") %>
+      <!-- Loop through the nominees table to display each one in a different row  -->
+      <% @nominees.each do |nominee| %>
+      <!-- Since we at this stage only the nominees preselected by the committe have advanced
+            then we must check that only nominees with committee_check == true are shown -->
+        <!-- % if nominee.chairman_check - 05/22/2016: Commented out since they want all nominees available for vote %>
+          <tr>
+          <% @count = @count + 1 %>
+          <! @index helps to keep track of the checkbox id within the array of checkboxes -->
+          <% @index = @count - 1 %>
+            <td class="td"><%= @count %></td>
+            <td class="td"><%= nominee.name %></td>
+            <td class="td">
+                <!-- Button trigger modal -->
+               <a href="#myModal<%= nominee.id%>" role="button" class="center" data-toggle="modal">View Details</a>          <!-- Modal -->
+                  <div class="modal fade" id="myModal<%= nominee.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h3 class="modal-title" id="myModalLabel">Details for:  <%= nominee.name %></h3>
+                        </div><br>
+                        <div class="container-fluid" align="justify">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <p>
+                                <strong>Nominee Mail:</strong>
+                                <%= nominee.mail %>
+                              </p>
+                            </div>
+                          <br>  
+                          </div>
+                          <div class="row">  
+                            <div class="col-md-12">
+                              <p><strong>Nominee Statement:</strong></p>
+                              <textarea id="statement" class="form-control" rows="5">
+                                <%= nominee.statement %>
+                              </textarea>
+                            </div>
+                          </div>  
+                          <br>
+                          <div class="row">  
+                            <div class="col-md-12">
+                              <p><strong>Nominee Curriculum Vitae:</strong></p>
+                              <textarea id="cv" class="form-control" rows="20">
+                                <%= nominee.cv %>
+                              </textarea>
+                            </div>
+                          </div>
+                          <br>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </td>
+            <!-- End of the modal-->
+            <%= bootstrap_form_for nominee, :action => 'fellows_vote', layout: :inline, remote: true do |f| %>
+              <%= f.form_group :vote_id, hide_label: true do %>
+                <td class="radioBut"><%= f.radio_button :vote_id, 1, checked: false %></td>
+                <td class="radioBut"><%= f.radio_button :vote_id, 2, checked: false %></td>
+                <td class="radioBut"><%= f.radio_button :vote_id, 3, checked: true %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <!-- % end %> End of the if 05/22/2016:commented out since they want all of the nominees available to be voted-->
+      <% end %> <!-- End of for -->
+    </table><br>
+    <div class="center">
+      <%= submit_tag "Submit Votes", :class => "btn btn-primary btn-lg", :id => "submit_votes_redirect" %>
+    </div>
+    <li><%= @count %></li>
+  </div>
+</div>
+
+
+

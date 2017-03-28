@@ -1,0 +1,47 @@
+
+
+<div class="alert alert-success" role="alert">
+  <ul>
+      <li><%= notice %></li>
+      <h4>Thank you for nominating <%= @nominee.name %>!</h4>
+      <p>Use the edit button at the bottom of this page to make any modification needed.</p>
+  </ul>
+</div>
+
+<div class="container-fluid" align="justify">
+  <div class="row">
+    <div class="col-md-6">
+      <p>
+        <strong>Nominee Name:</strong>
+        <%= @nominee.name %>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <p>
+        <strong>Nominee Mail:</strong>
+        <%= @nominee.mail %>
+      </p>
+    </div>
+  <br>  
+  </div>
+  <div class="row">  
+    <div class="col-md-12">
+      <p><strong>Nominee Statement:</strong></p>
+      <textarea id="statement" class="form-control" rows="5">
+        <%= @nominee.statement %>
+      </textarea>
+    </div>
+  </div>  
+  <br>
+  <div class="row">  
+    <div class="col-md-12">
+      <p><strong>Nominee Curriculum Vitae:</strong></p>
+      <textarea id="cv" class="form-control" rows="15">
+        <%= @nominee.cv %>
+      </textarea>
+    </div>
+  </div>
+  <br>
+  <%= link_to 'Edit', edit_nominee_path(@nominee) %>
+</div>
+
